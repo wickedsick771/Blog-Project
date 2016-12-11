@@ -22,6 +22,7 @@ namespace Blog.Controllers
             {
                 var articles = database.Articles
                     .Include(a => a.Author)
+                    .Include(a => a.Tags)
                     .ToList();
 
                 return View(articles);
@@ -42,6 +43,7 @@ namespace Blog.Controllers
                 var article = database.Articles
                     .Where(a => a.Id == id)
                     .Include(a => a.Author)
+                    .Include(a => a.Tags)
                     .First();
 
                 if(article == null)
@@ -79,6 +81,9 @@ namespace Blog.Controllers
                         Where(u => u.UserName == this.User.Identity.Name).First().Id;
                     
                     var article = new Article(authorId, model.Title, model.Content, model.CategoryId);
+
+                this.SetArticleTags(article, model, database);
+
                     //Save article in DB
                     database.Articles.Add(article);
                     database.SaveChanges();
@@ -89,7 +94,37 @@ namespace Blog.Controllers
 
 
         }
-        
+
+        private void SetArticleTags(Article article, ArticleViewModel model, BlogDbContext database)
+        {
+            //Split tags
+            var tagsStrings = model.Tags
+                .Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(t => t.ToLower())
+                .Distinct();
+
+            //Clear current article tags
+            article.Tags.Clear();
+
+            //Set new article tags
+            foreach (var tagString in tagsStrings)
+            {
+                //Get tag from db by its name
+                Tag tag = database.Tags.FirstOrDefault(t => t.Name.Equals(tagString));
+
+                //If the tag is null, create new tag
+                if (tag == null)
+                {
+                    tag = new Tag() { Name = tagString };
+                    database.Tags.Add(tag);
+                }
+
+                //Add tag to article tags
+                article.Tags.Add(tag);
+
+            }
+        }
+
         //get
         public ActionResult Edit(int? id)
         {
@@ -119,6 +154,8 @@ namespace Blog.Controllers
                 model.Content = article.Content;
                 model.CategoryId = article.CategoryId;
                 model.Categories = db.Categories.OrderBy(c => c.Name).ToList();
+
+                model.Tags = string.Join(", ", article.Tags.Select(t => t.Name));
 
                 return View(model);
             }
@@ -159,12 +196,18 @@ namespace Blog.Controllers
             }
             using (var db = new BlogDbContext())
             {
-                var article = db.Articles.FirstOrDefault(a => a.Id == id);
+                var article = db.Articles
+                    .Where(a => a.Id == id)
+                    .Include(a => a.Author)
+                    .Include(a => a.Category)
+                    .First();
 
                 if(!IsUserAuthorizedToEdit(article))
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
                 }
+
+                ViewBag.TagsString = string.Join(", ", article.Tags.Select(t => t.Name));
 
                 if(article == null)
                 {

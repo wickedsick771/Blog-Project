@@ -22,6 +22,7 @@ namespace Blog.Controllers.Admin
             using(var db = new BlogDbContext())
             {
                 var articles = db.Categories
+                    .Include(t => t.Articles.Select(a => a.Tags))
                     .Include(c => c.Articles.Select(a => a.Author))
                     .FirstOrDefault(c => c.Id == id)
                     .Articles

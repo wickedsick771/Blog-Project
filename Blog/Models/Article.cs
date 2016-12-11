@@ -11,6 +11,7 @@ namespace Blog.Models
     {
         public Article()
         {
+            this.tags = new HashSet<Tag>();
         }
 
         public Article(string authorId, string title, string content, int categoryId)
@@ -20,6 +21,7 @@ namespace Blog.Models
             this.Content = content;
             this.CategoryId = categoryId;
             this.DateAdded = DateTime.Now;
+            this.tags = new HashSet<Tag>();
         }
 
 
@@ -47,6 +49,14 @@ namespace Blog.Models
         public bool isAuthor(string name)
         {
             return this.Author.UserName.Equals(name);
+        }
+
+        private ICollection<Tag> tags;
+
+        public virtual ICollection<Tag> Tags
+        {
+            get { return this.tags; }
+            set { this.tags = value; }
         }
     }
 }

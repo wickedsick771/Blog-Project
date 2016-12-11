@@ -22,5 +22,7 @@ namespace Blog.Models
         public string AuthorId { get; set; }
 
         public  ICollection<Category> Categories { get; set; }
+
+        public string Tags { get; set; }
     }
 }
