@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Wicked's BLOG</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/footer.css")
 </head>
 <body>
     <div class="navbar navbar-default navbar-fixed-top">
@@ -16,7 +17,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("SOFTUNI BLOG", "Index", "Home", new { area = "" }, new
+                @Html.ActionLink("Wicked's BLOG", "Index", "Home", new { area = "" }, new
            {
                @class = "navbar-brand"
            })
@@ -26,15 +27,22 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <footer class="pull-right">
-            <p>&copy; @DateTime.Now.Year - SoftUni Blog</p>
-        </footer>
-    </div>
+    <div id="wrapper">
+                <div class="container body-content">
+                    @RenderBody()
+                </div>
+            </div>
+            <div id="footer">
+                <footer class="footer pull-right">
+                    <p>&copy; @DateTime.Now.Year - SoftUni Blog</p>
+                </footer>
+            </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+
+
+                @Scripts.Render("~/bundles/jquery")
+                @Scripts.Render("~/bundles/bootstrap")
+                @RenderSection("scripts", required: false)
+
 </body>
 </html>

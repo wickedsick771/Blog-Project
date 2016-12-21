@@ -1,0 +1,36 @@
+﻿@model  List<Blog.Models.HomeViewModel>
+
+@Styles.Render("~/Content/sidebar_menu.css")
+
+@{
+    ViewBag.Title = "ListAll";
+}
+
+
+<div id="sidebar-wrapper">
+    <ul class="sidebar-nav">
+        @foreach (var category in Model)
+            {
+            <li>
+                <h3>
+                    @Html.ActionLink(string.Format($"{category.Categories}({category.Articles.Count})"), null)
+                </h3>
+            </li>
+        }
+    </ul>
+</div>
+
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                @foreach (var article in Model)
+                {
+                    <div class="col-md-6">
+                        @Html.ActionLink(string.Format($"{article.Articles}"), null);
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

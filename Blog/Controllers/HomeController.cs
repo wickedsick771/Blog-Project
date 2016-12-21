@@ -11,6 +11,8 @@ namespace Blog.Controllers
 {
     public class HomeController : Controller
     {
+
+        
         public ActionResult Index()
         {
             return RedirectToAction("ListCategories");
@@ -48,5 +50,27 @@ namespace Blog.Controllers
 
             }
         }
+
+        
+        //Get
+        public ActionResult ListAll(HomeViewModel model)
+        {
+            using (var db = new BlogDbContext())
+            {
+                model.Articles = db.Articles
+                    .Include(a => a.Category)
+                    .Include(a => a.Author)
+                    .Include(a => a.Tags)
+                    .ToList();
+
+                model.Categories = db.Categories
+                    .Include(c => c.Articles)
+                    .ToList();
+
+                return View(model);
+
+            }
+        }
+
+        }
     }
-}
